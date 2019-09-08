@@ -22,11 +22,11 @@ public class DataBaseProvider {
     private static final String CREATE_ADDRESSES_TABLE = "create table addresses (id integer primary key autoincrement, "
             + "id_person integer not null, address text not null);";
 
-    private static final String DB_PERSONS_TABLE = "persons";
+    public static final String DB_PERSONS_TABLE = "persons";
     public static final String KEY_PERSON_ID = "id";
     public static final String KEY_PERSON_NAME = "name";
 
-    private static final String DB_ADDRESSES_TABLE = "addresses";
+    public static final String DB_ADDRESSES_TABLE = "addresses";
 
     public static final String KEY_ADDRESS_ID = "id";
     public static final String KEY_ADDRESS_PERSON_ID = "id_person";
@@ -108,7 +108,7 @@ public class DataBaseProvider {
     }
 
 
-    public class DbHelper extends SQLiteOpenHelper {
+    public static class DbHelper extends SQLiteOpenHelper {
 
         public DbHelper(@Nullable Context context) {
             super(context, DB_NAME, null, DATABASE_VERSION);
