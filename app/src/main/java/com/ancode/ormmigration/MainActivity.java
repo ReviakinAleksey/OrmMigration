@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         DaoApp app = (DaoApp) getApplication();
         DaoSession session = app.getSession();
-        db = new DataBaseProvider(app.getFallbackDb(),
-                session.getPersonDao(),
+        db = new DataBaseProvider(session.getPersonDao(),
                 session.getAddressDao());
 
         personName = findViewById(R.id.person_name);

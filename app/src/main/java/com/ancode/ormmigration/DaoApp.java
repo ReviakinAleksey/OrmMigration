@@ -13,7 +13,6 @@ public class DaoApp extends Application implements Application.ActivityLifecycle
 
     private DaoHelper daoHelper;
     private DaoSession session;
-    private SQLiteDatabase fallbackDb;
 
     @Override
     public void onCreate() {
@@ -27,17 +26,13 @@ public class DaoApp extends Application implements Application.ActivityLifecycle
         return session;
     }
 
-    public SQLiteDatabase getFallbackDb() {
-        return fallbackDb;
-    }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         daoHelper = new DaoHelper(this, DataBaseProvider.DB_NAME);
-        SQLiteDatabase database = daoHelper.getReadableDatabase();
+        SQLiteDatabase database = daoHelper.getWritableDatabase();
         DaoMaster master = new DaoMaster(database);
         session = master.newSession();
-        fallbackDb = (SQLiteDatabase) session.getDatabase().getRawDatabase();
     }
 
     @Override

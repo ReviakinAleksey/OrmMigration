@@ -13,18 +13,18 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Address {
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
-    public long id;
+    public Long id;
 
     @Property(nameInDb = "id_person")
     @NotNull
-    public int personId;
+    public Long personId;
 
     @Property(nameInDb = "address")
     @NotNull
     public String address;
 
-@Generated(hash = 903809066)
-public Address(long id, int personId, @NotNull String address) {
+@Generated(hash = 1776160774)
+public Address(Long id, @NotNull Long personId, @NotNull String address) {
     this.id = id;
     this.personId = personId;
     this.address = address;
@@ -34,24 +34,19 @@ public Address(long id, int personId, @NotNull String address) {
 public Address() {
 }
 
-    @Override
-    public String toString() {
-        return address;
-    }
-
-public long getId() {
+public Long getId() {
     return this.id;
 }
 
-public void setId(long id) {
+public void setId(Long id) {
     this.id = id;
 }
 
-public int getPersonId() {
+public Long getPersonId() {
     return this.personId;
 }
 
-public void setPersonId(int personId) {
+public void setPersonId(Long personId) {
     this.personId = personId;
 }
 
@@ -62,4 +57,5 @@ public String getAddress() {
 public void setAddress(String address) {
     this.address = address;
 }
+
 }

@@ -13,14 +13,14 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Person {
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
-    public long id;
+    public Long id;
 
     @Property(nameInDb = "name")
     @NotNull
     public String name;
 
-@Generated(hash = 296726366)
-public Person(long id, @NotNull String name) {
+@Generated(hash = 180980870)
+public Person(Long id, @NotNull String name) {
     this.id = id;
     this.name = name;
 }
@@ -29,16 +29,11 @@ public Person(long id, @NotNull String name) {
 public Person() {
 }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
-public long getId() {
+public Long getId() {
     return this.id;
 }
 
-public void setId(long id) {
+public void setId(Long id) {
     this.id = id;
 }
 

@@ -31,8 +31,7 @@ public class MainActivityTest {
                 protected void afterActivityFinished() {
                     super.afterActivityFinished();
                     DaoApp app = (DaoApp) getActivity().getApplication();
-                    DataBaseProvider.DbHelper dbHelper = new DataBaseProvider.DbHelper(app);
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    SQLiteDatabase db = (SQLiteDatabase) app.getSession().getDatabase().getRawDatabase();
                     db.execSQL("DELETE FROM " + DataBaseProvider.DB_PERSONS_TABLE);
                     db.execSQL("DELETE FROM " + DataBaseProvider.DB_ADDRESSES_TABLE);
                 }
