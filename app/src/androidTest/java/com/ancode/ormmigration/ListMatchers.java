@@ -2,6 +2,8 @@ package com.ancode.ormmigration;
 
 import android.view.View;
 import android.widget.ListView;
+import com.ancode.ormmigration.model.Address;
+import com.ancode.ormmigration.model.Person;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -26,10 +28,10 @@ public class ListMatchers {
         };
     }
 
-    public static Matcher<DataBaseProvider.Person> withPersonName(final Matcher nameMatcher) {
-        return new TypeSafeMatcher<DataBaseProvider.Person>() {
+    public static Matcher<Person> withPersonName(final Matcher nameMatcher) {
+        return new TypeSafeMatcher<Person>() {
             @Override
-            public boolean matchesSafely(DataBaseProvider.Person person) {
+            public boolean matchesSafely(Person person) {
                 return nameMatcher.matches(person.name);
             }
 
@@ -40,10 +42,10 @@ public class ListMatchers {
         };
     }
 
-    public static Matcher<DataBaseProvider.Address> withAddress(final Matcher nameMatcher) {
-        return new TypeSafeMatcher<DataBaseProvider.Address>() {
+    public static Matcher<Address> withAddress(final Matcher nameMatcher) {
+        return new TypeSafeMatcher<Address>() {
             @Override
-            public boolean matchesSafely(DataBaseProvider.Address address) {
+            public boolean matchesSafely(Address address) {
                 return nameMatcher.matches(address.address);
             }
 

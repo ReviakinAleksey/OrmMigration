@@ -7,18 +7,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import com.ancode.ormmigration.model.Address;
+import com.ancode.ormmigration.model.DaoSession;
+import com.ancode.ormmigration.model.Person;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private DataBaseProvider.Person selectedPerson;
+    private Person selectedPerson;
 
     private DataBaseProvider db;
     private EditText personName;
     private EditText personAddress;
-    private ArrayAdapter<DataBaseProvider.Person> personsAdapter;
-    private ArrayAdapter<DataBaseProvider.Address> addressesAdapter;
+    private ArrayAdapter<Person> personsAdapter;
+    private ArrayAdapter<Address> addressesAdapter;
     private ListView personsList;
     private ListView addressesList;
 
@@ -28,15 +31,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DaoApp app = (DaoApp) getApplication();
-        db = new DataBaseProvider(app.getFallbackDb());
+        DaoSession session = app.getSession();
+        db = new DataBaseProvider(app.getFallbackDb(),
+                session.getPersonDao(),
+                session.getAddressDao());
 
         personName = findViewById(R.id.person_name);
         personsList = findViewById(R.id.persons_list);
         addressesList = findViewById(R.id.addresses_list);
         personAddress = findViewById(R.id.person_address);
 
-
-        addressesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, new ArrayList<DataBaseProvider.Address>());
+        addressesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, new ArrayList<Address>());
         addressesList.setAdapter(addressesAdapter);
 
         personsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, db.getPersons());
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAdresses() {
-        List<DataBaseProvider.Address> addresses = db.getAddresses(selectedPerson.id);
+        List<Address> addresses = db.getAddresses(selectedPerson.id);
         addressesAdapter.clear();
         addressesAdapter.addAll(addresses);
     }

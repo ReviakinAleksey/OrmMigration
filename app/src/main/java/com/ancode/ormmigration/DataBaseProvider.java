@@ -2,18 +2,20 @@ package com.ancode.ormmigration;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import com.ancode.ormmigration.model.Address;
+import com.ancode.ormmigration.model.AddressDao;
+import com.ancode.ormmigration.model.Person;
+import com.ancode.ormmigration.model.PersonDao;
+import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseProvider {
     public static final int DATABASE_VERSION = 123;
     public static final String DB_NAME = "DB_ORM";
-
 
     public static final String DB_PERSONS_TABLE = "persons";
     public static final String KEY_PERSON_ID = "id";
@@ -26,46 +28,25 @@ public class DataBaseProvider {
     public static final String KEY_ADDRESS_ADDR = "address";
 
     private SQLiteDatabase db;
+    private PersonDao personDao;
+    private AddressDao addressDao;
 
 
-    public DataBaseProvider(SQLiteDatabase db) {
+    public DataBaseProvider(SQLiteDatabase db, PersonDao personDao, AddressDao addressDao) {
         this.db = db;
+        this.personDao = personDao;
+        this.addressDao = addressDao;
     }
 
 
-    public ArrayList<Person> getPersons() {
-        String sql = "select * from persons;";
-        ArrayList<Person> obj = new ArrayList<>();
-
-        Cursor c = db.query(DB_PERSONS_TABLE, new String[]{KEY_PERSON_ID, KEY_PERSON_NAME}, null, null, null, null, null);
-        if (c != null) {
-            c.moveToFirst();
-            int num = c.getCount();
-
-            for (int i = 0; i < num; i++) {
-                Person person = new Person();
-                person.id = c.getInt(0);
-                person.name = c.getString(1);
-                obj.add(person);
-                c.moveToNext();
-            }
-        }
-        return obj;
+    public List<Person> getPersons() {
+        return personDao.loadAll();
     }
 
-    public List<Address> getAddresses(int personId) {
-        List<Address> result = new ArrayList<>();
-        try (Cursor c = db.query(DB_ADDRESSES_TABLE, new String[]{KEY_ADDRESS_ID, KEY_ADDRESS_PERSON_ID, KEY_ADDRESS_ADDR},
-                KEY_ADDRESS_PERSON_ID + " = ?", new String[]{String.valueOf(personId)}, null, null, null)) {
-            while (c.moveToNext()) {
-                Address address = new Address();
-                address.id = c.getInt(0);
-                address.personId = c.getInt(1);
-                address.address = c.getString(2);
-                result.add(address);
-            }
-        }
-        return result;
+    public List<Address> getAddresses(long personId) {
+        QueryBuilder<Address> qb = addressDao.queryBuilder();
+        qb.where(AddressDao.Properties.PersonId.eq(personId));
+        return qb.list();
     }
 
     public long insertPerson(String name) {
@@ -75,7 +56,7 @@ public class DataBaseProvider {
         return db.insert(DB_PERSONS_TABLE, null, initialValues);
     }
 
-    public long insertAddress(int personId, String address) {
+    public long insertAddress(long personId, String address) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_ADDRESS_PERSON_ID, personId);
         initialValues.put(KEY_ADDRESS_ADDR, address);
@@ -98,28 +79,6 @@ public class DataBaseProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        }
-    }
-
-    public static class Person {
-        public int id;
-        public String name;
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-
-    public static class Address {
-        public int id;
-        public int personId;
-        public String address;
-
-        @Override
-        public String toString() {
-            return address;
         }
     }
 
