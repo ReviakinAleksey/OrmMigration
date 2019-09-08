@@ -26,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = new DataBaseProvider(this);
-        db.open();
+
+        DaoApp app = (DaoApp) getApplication();
+        db = new DataBaseProvider(app.getFallbackDb());
+
         personName = findViewById(R.id.person_name);
         personsList = findViewById(R.id.persons_list);
         addressesList = findViewById(R.id.addresses_list);

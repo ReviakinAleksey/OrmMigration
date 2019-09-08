@@ -3,7 +3,6 @@ package com.ancode.ormmigration;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
@@ -13,14 +12,8 @@ import java.util.List;
 
 public class DataBaseProvider {
     public static final int DATABASE_VERSION = 123;
-    private static final String DB_NAME = "DB_ORM";
+    public static final String DB_NAME = "DB_ORM";
 
-    private static final String CREATE_PERSONS_TABLE = "create table persons (id integer primary key autoincrement, "
-            + "name text not null);";
-
-
-    private static final String CREATE_ADDRESSES_TABLE = "create table addresses (id integer primary key autoincrement, "
-            + "id_person integer not null, address text not null);";
 
     public static final String DB_PERSONS_TABLE = "persons";
     public static final String KEY_PERSON_ID = "id";
@@ -32,35 +25,18 @@ public class DataBaseProvider {
     public static final String KEY_ADDRESS_PERSON_ID = "id_person";
     public static final String KEY_ADDRESS_ADDR = "address";
 
-    private final Context context;
-
-    private DbHelper DBHelper;
     private SQLiteDatabase db;
 
-    public DataBaseProvider(Context ctx) {
-        this.context = ctx;
-        DBHelper = new DbHelper(context);
-    }
 
-    // ---opens the database---
-    public DataBaseProvider open() throws SQLException {
-        try {
-            db = DBHelper.getWritableDatabase();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return this;
-    }
-
-    // ---closes the database---
-    public void close() {
-        DBHelper.close();
+    public DataBaseProvider(SQLiteDatabase db) {
+        this.db = db;
     }
 
 
     public ArrayList<Person> getPersons() {
         String sql = "select * from persons;";
         ArrayList<Person> obj = new ArrayList<>();
+
         Cursor c = db.query(DB_PERSONS_TABLE, new String[]{KEY_PERSON_ID, KEY_PERSON_NAME}, null, null, null, null, null);
         if (c != null) {
             c.moveToFirst();
@@ -81,7 +57,7 @@ public class DataBaseProvider {
         List<Address> result = new ArrayList<>();
         try (Cursor c = db.query(DB_ADDRESSES_TABLE, new String[]{KEY_ADDRESS_ID, KEY_ADDRESS_PERSON_ID, KEY_ADDRESS_ADDR},
                 KEY_ADDRESS_PERSON_ID + " = ?", new String[]{String.valueOf(personId)}, null, null, null)) {
-            while (c.moveToNext()){
+            while (c.moveToNext()) {
                 Address address = new Address();
                 address.id = c.getInt(0);
                 address.personId = c.getInt(1);
@@ -116,15 +92,12 @@ public class DataBaseProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_PERSONS_TABLE);
-            db.execSQL(CREATE_ADDRESSES_TABLE);
+
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS CREATE_PERSONS_TABLE");
-            db.execSQL("DROP TABLE IF EXISTS CREATE_ADDRESSES_TABLE");
-            onCreate(db);
+
         }
     }
 
